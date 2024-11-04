@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(cuid())
+  email         String       @unique
+  password      String?      // Optional because of social login
+  name          String?
+  university    String?
+  career        String?
+  workStatus    String?
+  learningStyle String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  // Social login fields
+  googleId      String?      @unique
+  appleId       String?      @unique
+  facebookId    String?      @unique
+  
+  // Relationships
+  studyBlocks   StudyBlock[]
+  tasks         Task[]
+}
+
+model StudyBlock {
+  id          String    @id @default(cuid())
+  title       String
+  startDate   DateTime
+  endDate     DateTime
+  totalHours  Int
+  daysOfWeek  String[]  // Store selected days ['MON', 'TUE', etc.]
+  content     String?   // Store content reference or path
+  status      String    @default("ACTIVE")
+  
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  tasks       Task[]
+  schedule    Schedule[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Task {
+  id           String    @id @default(cuid())
+  title        String
+  description  String?
+  dueDate      DateTime
+  completed    Boolean   @default(false)
+  taskType    String    
+
+  // Relationships
+  studyBlockId String
+  studyBlock   StudyBlock @relation(fields: [studyBlockId], references: [id])
+  userId       String
+  user         User       @relation(fields: [userId], references: [id])
+  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Schedule {
+  id           String     @id @default(cuid())
+  dayOfWeek    String    // MON, TUE, etc.
+  startTime    DateTime
+  endTime      DateTime
+  
+  // Relationships
+  studyBlockId String
+  studyBlock   StudyBlock @relation(fields: [studyBlockId], references: [id])
+  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
