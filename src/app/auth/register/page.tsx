@@ -3,11 +3,30 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select/select";
+///Users/bautistaroberts/study-app/src/app/auth/register/page.tsx
+interface FormData {
+  email: string;
+  password: string;
+  university: string;
+  career: string;
+  workStatus: string;
+  learningStyle: string;
+}
 
 export default function RegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
     university: "",
@@ -21,6 +40,10 @@ export default function RegisterPage() {
   const handleNextStep = (e: React.FormEvent) => {
     e.preventDefault();
     setStep(step + 1);
+  };
+
+  const handleSelectChange = (field: keyof FormData) => (value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,7 +66,6 @@ export default function RegisterPage() {
         throw new Error(data.error || "Registration failed");
       }
 
-      // Redirect to login page with success message
       router.push("/auth/login?registered=true");
     } catch (error) {
       setError(error instanceof Error ? error.message : "Registration failed");
@@ -53,197 +75,201 @@ export default function RegisterPage() {
   };
 
   const renderStep1 = () => (
-    <>
-      <div className="space-y-4">
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-xs uppercase tracking-wide text-gray-500"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"
-            required
-            className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 sm:text-sm"
-            value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-xs uppercase tracking-wide text-gray-500"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            required
-            className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 sm:text-sm"
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-          />
-        </div>
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-black uppercase">
+          Email
+        </label>
+        <Input
+          id="email"
+          type="email"
+          required
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className="mt-1 block w-full rounded-none border-b border-gray-300 focus:border-[#012622] focus:ring-0 bg-transparent"
+          placeholder="Insert email..."
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-black uppercase">
+          Password
+        </label>
+        <Input
+          id="password"
+          type="password"
+          required
+          value={formData.password}
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
+          className="mt-1 block w-full rounded-none border-b border-gray-300 focus:border-[#012622] focus:ring-0 bg-transparent"
+          placeholder="Insert Password..."
+        />
       </div>
 
-      <button
+      <Button
         type="button"
         onClick={handleNextStep}
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
+        className="w-full bg-[#012622] hover:bg-[#012622]/90 text-white rounded-none"
       >
         Next
-      </button>
-    </>
+      </Button>
+    </div>
   );
 
   const renderStep2 = () => (
-    <>
-      <div className="space-y-4">
-        <div>
-          <label
-            htmlFor="university"
-            className="block text-xs uppercase tracking-wide text-gray-500"
-          >
-            Select University
-          </label>
-          <select
-            id="university"
-            className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 sm:text-sm"
-            value={formData.university}
-            onChange={(e) =>
-              setFormData({ ...formData, university: e.target.value })
-            }
-          >
-            <option value="">Select a university</option>
-            <option value="uni1">University 1</option>
-            <option value="uni2">University 2</option>
-          </select>
-        </div>
-        <div>
-          <label
-            htmlFor="career"
-            className="block text-xs uppercase tracking-wide text-gray-500"
-          >
-            Select Career
-          </label>
-          <select
-            id="career"
-            className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 sm:text-sm"
-            value={formData.career}
-            onChange={(e) =>
-              setFormData({ ...formData, career: e.target.value })
-            }
-          >
-            <option value="">Select a career</option>
-            <option value="career1">Career 1</option>
-            <option value="career2">Career 2</option>
-          </select>
-        </div>
-        <div>
-          <label
-            htmlFor="workStatus"
-            className="block text-xs uppercase tracking-wide text-gray-500"
-          >
-            Do you work?
-          </label>
-          <select
-            id="workStatus"
-            className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 sm:text-sm"
-            value={formData.workStatus}
-            onChange={(e) =>
-              setFormData({ ...formData, workStatus: e.target.value })
-            }
-          >
-            <option value="">Select an option</option>
-            <option value="yes">Yes</option>
-            <option value="no">No</option>
-          </select>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-black uppercase">
+          Select University
+        </label>
+        <Select
+          value={formData.university}
+          onValueChange={handleSelectChange("university")}
+        >
+          <SelectTrigger className="w-full rounded-none border-b border-gray-300 focus:border-[#012622] focus:ring-0 bg-transparent">
+            <SelectValue placeholder="Select University" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="uni1">University 1</SelectItem>
+            <SelectItem value="uni2">University 2</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      <button
+      <div>
+        <label className="block text-sm font-medium text-black uppercase">
+          Select Career
+        </label>
+        <Select
+          value={formData.career}
+          onValueChange={handleSelectChange("career")}
+        >
+          <SelectTrigger className="w-full rounded-none border-b border-gray-300 focus:border-[#012622] focus:ring-0 bg-transparent">
+            <SelectValue placeholder="Choose Career..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="career1">Career 1</SelectItem>
+            <SelectItem value="career2">Career 2</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-black uppercase">
+          Do you work
+        </label>
+        <Select
+          value={formData.workStatus}
+          onValueChange={handleSelectChange("workStatus")}
+        >
+          <SelectTrigger className="w-full rounded-none border-b border-gray-300 focus:border-[#012622] focus:ring-0 bg-transparent">
+            <SelectValue placeholder="Choose Option..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="yes">Yes</SelectItem>
+            <SelectItem value="no">No</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <Button
         type="button"
         onClick={handleNextStep}
-        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
+        className="w-full bg-[#012622] hover:bg-[#012622]/90 text-white rounded-none"
       >
         Next
-      </button>
-    </>
+      </Button>
+    </div>
   );
 
   const renderStep3 = () => (
-    <>
+    <div className="space-y-6">
       <div>
-        <label
-          htmlFor="learningStyle"
-          className="block text-xs uppercase tracking-wide text-gray-500"
-        >
-          Select what's your best way of learning
+        <label className="block text-sm font-medium text-black uppercase">
+          Select best way of learning
         </label>
-        <select
-          id="learningStyle"
-          className="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300 sm:text-sm"
+        <Select
           value={formData.learningStyle}
-          onChange={(e) =>
-            setFormData({ ...formData, learningStyle: e.target.value })
-          }
+          onValueChange={handleSelectChange("learningStyle")}
         >
-          <option value="">Select a learning style</option>
-          <option value="visual">Visual</option>
-          <option value="auditory">Auditory</option>
-          <option value="kinesthetic">Kinesthetic</option>
-        </select>
+          <SelectTrigger className="w-full rounded-none border-b border-gray-300 focus:border-[#012622] focus:ring-0 bg-transparent">
+            <SelectValue placeholder="Choose an option" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="visual">Visual</SelectItem>
+            <SelectItem value="auditory">Auditory</SelectItem>
+            <SelectItem value="kinesthetic">Kinesthetic</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
-      <button
+      <Button
         type="submit"
-        className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
+        disabled={loading}
+        className="w-full bg-[#012622] hover:bg-[#012622]/90 text-white rounded-none"
       >
         Create Account
-      </button>
-    </>
+      </Button>
+    </div>
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold">
-            Create Account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Step {step} of 3
-          </p>
-        </div>
+    <div className="h-screen flex flex-col">
+      {/* Top section */}
+      <div className="flex-1 bg-[#FEFDF7] px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="w-full max-w-md space-y-6">
+          <div>
+            <h2 className="text-center text-2xl font-medium text-black">
+              Create Account
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Step {step} of 3
+            </p>
+          </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {step === 1 && renderStep1()}
-          {step === 2 && renderStep2()}
-          {step === 3 && renderStep3()}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {step === 1 && renderStep1()}
+            {step === 2 && renderStep2()}
+            {step === 3 && renderStep3()}
 
-          {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
+            {error && (
+              <div className="text-red-500 text-sm text-center">{error}</div>
+            )}
+          </form>
+
+          {step === 1 && (
+            <p className="text-center text-sm text-gray-600">
+              Already have an account?{" "}
+              <Link
+                href="/auth/login"
+                className="text-[#012622] hover:underline"
+              >
+                Sign in
+              </Link>
+            </p>
           )}
-        </form>
+        </div>
+      </div>
 
-        {step === 1 && (
-          <p className="text-center text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link
-              href="/auth/login"
-              className="font-medium text-gray-900 hover:underline"
-            >
-              Sign in
-            </Link>
-          </p>
-        )}
+      {/* Bottom section with wave and logo */}
+      <div className="h-[180px] bg-[#B0AE9F] relative">
+        <div
+          className="absolute left-0 right-0 h-24 bg-[#FEFDF7]"
+          style={{
+            clipPath: "ellipse(80% 80% at 50% 0%)",
+          }}
+        />
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+          <Image
+            src="/images/Logo.png"
+            alt="Study Buddy Logo"
+            width={80}
+            height={80}
+            className="w-auto h-auto"
+            priority
+          />
+        </div>
       </div>
     </div>
   );

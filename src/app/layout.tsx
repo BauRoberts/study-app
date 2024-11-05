@@ -1,9 +1,13 @@
-import { Inter } from "next/font/google";
+import { Readex_Pro } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Script from "next/script";
 
-const inter = Inter({ subsets: ["latin"] });
+const readexPro = Readex_Pro({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700"],
+  variable: "--font-readex",
+});
 
 export const metadata = {
   title: "StudySmart - Your Personal Study Companion",
@@ -17,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={readexPro.variable}>
       <head>
         <Script
           src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
@@ -28,9 +32,9 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
       </head>
-      <body className={inter.className}>
+      <body>
         <Providers>
-          <div className="min-h-screen bg-gray-50">{children}</div>
+          <main className="min-h-screen font-sans">{children}</main>
         </Providers>
       </body>
     </html>

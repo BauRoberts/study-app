@@ -98,10 +98,6 @@ Key Files
 /src/app/api/study-blocks/route.ts: Main API endpoints
 /src/components/study-layouts/: Study interface components
 
-Current implementations:
-[Copy relevant implementations]
-
 What I need help with:
-[Specify current task]
-
-Could you help me with [specific task]? Let me know if you need to see any specific code or need more context!
+I would like to setup the style of the login and profile setup! I have some the finalized type of style i want on figma. I also have the logo, colors and font to setup.
+Could you help me with this restyling? Let me know if you need to see any specific code or need more context!
