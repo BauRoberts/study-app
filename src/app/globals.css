@@ -19,3 +19,24 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@layer base {
+  .prose {
+    --tw-prose-body: theme("colors.gray.800");
+    --tw-prose-headings: theme("colors.gray.900");
+    --tw-prose-lead: theme("colors.gray.800");
+    --tw-prose-links: theme("colors.blue.600");
+    --tw-prose-bold: theme("colors.gray.900");
+    --tw-prose-counters: theme("colors.gray.700");
+    --tw-prose-bullets: theme("colors.gray.700");
+    --tw-prose-hr: theme("colors.gray.300");
+    --tw-prose-quotes: theme("colors.gray.800");
+    --tw-prose-quote-borders: theme("colors.gray.300");
+    --tw-prose-captions: theme("colors.gray.700");
+    --tw-prose-code: theme("colors.gray.900");
+    --tw-prose-pre-code: theme("colors.gray.200");
+    --tw-prose-pre-bg: theme("colors.gray.800");
+    --tw-prose-th-borders: theme("colors.gray.300");
+    --tw-prose-td-borders: theme("colors.gray.200");
+  }
+}

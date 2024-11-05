@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import StudySummary from "@/components/StudySummary";
 
 interface Task {
   id: string;
@@ -223,9 +224,19 @@ export default function StudyBlockClient({ id }: StudyBlockClientProps) {
                     <span className="text-sm text-gray-500">
                       Due: {new Date(task.dueDate).toLocaleDateString()}
                     </span>
-                    <button className="px-3 py-1 text-sm text-white bg-indigo-600 rounded-md hover:bg-indigo-700">
-                      Start
-                    </button>
+                    <StudySummary
+                      taskId={task.id}
+                      taskType={task.taskType}
+                      studyBlock={{
+                        id: studyBlock.id,
+                        title: studyBlock.title,
+                        tasks: studyBlock.tasks.map((t) => ({
+                          id: t.id,
+                          title: t.title,
+                          taskType: t.taskType,
+                        })),
+                      }}
+                    />
                   </div>
                 </div>
               </div>

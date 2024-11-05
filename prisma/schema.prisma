@@ -16,6 +16,7 @@ model User {
   career        String?
   workStatus    String?
   learningStyle String?
+  isPremium     Boolean      @default(false)  // Add this field for premium features
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   
@@ -49,21 +50,23 @@ model StudyBlock {
 }
 
 model Task {
-  id           String    @id @default(cuid())
-  title        String
-  description  String?
-  dueDate      DateTime
-  completed    Boolean   @default(false)
-  taskType    String    
+  id              String    @id @default(cuid())
+  title           String
+  description     String?
+  dueDate         DateTime
+  completed       Boolean   @default(false)
+  taskType        String    
+  summary         String?   // Add this field for storing the generated summary
+  lastSummaryDate DateTime? // Add this field to track when summaries are updated
 
   // Relationships
-  studyBlockId String
-  studyBlock   StudyBlock @relation(fields: [studyBlockId], references: [id])
-  userId       String
-  user         User       @relation(fields: [userId], references: [id])
+  studyBlockId    String
+  studyBlock      StudyBlock @relation(fields: [studyBlockId], references: [id])
+  userId          String
+  user            User       @relation(fields: [userId], references: [id])
   
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 }
 
 model Schedule {
