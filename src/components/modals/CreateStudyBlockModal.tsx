@@ -1,11 +1,34 @@
-"use client";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select/select";
 import { extractTextFromFile } from "@/utils/fileParser";
+import { cn } from "@/lib/utils";
 
 interface CreateStudyBlockModalProps {
   isOpen: boolean;
   onClose: () => void;
+}
+
+interface FormData {
+  title: string;
+  hoursPerDay: string;
+  testDate: string;
+  selectedDays: string[];
+  content: string;
 }
 
 const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
@@ -16,11 +39,13 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
+  const router = useRouter();
+
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     hoursPerDay: "",
     testDate: "",
-    selectedDays: [] as string[],
+    selectedDays: [],
     content: "",
   });
 
@@ -43,7 +68,6 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
       setLoading(false);
     }
   };
-  const router = useRouter();
 
   const handleNext = () => {
     if (step === 1) {
@@ -65,11 +89,6 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
     }
     setError("");
     setStep(step + 1);
-  };
-
-  const handleBack = () => {
-    setStep(step - 1);
-    setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -124,68 +143,59 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
   const renderStep1 = () => (
     <div className="space-y-6">
       <div>
-        <label
-          htmlFor="title"
-          className="block text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="title" className="block text-sm font-medium mb-2">
           Title
         </label>
-        <input
-          type="text"
+        <Input
           id="title"
-          required
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setFormData({ ...formData, title: e.target.value })
+          }
+          className="bg-[#E7E5D8] border-[#B0AE9F] font-light"
         />
       </div>
 
       <div>
-        <label
-          htmlFor="hoursPerDay"
-          className="block text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="hoursPerDay" className="block text-sm font-medium mb-2">
           How many hours can you study every day?
         </label>
-        <select
-          id="hoursPerDay"
-          required
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+        <Select
           value={formData.hoursPerDay}
-          onChange={(e) =>
-            setFormData({ ...formData, hoursPerDay: e.target.value })
+          onValueChange={(value: string) =>
+            setFormData({ ...formData, hoursPerDay: value })
           }
         >
-          <option value="">Select hours</option>
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((hour) => (
-            <option key={hour} value={hour}>
-              {hour} hours
-            </option>
-          ))}
-        </select>
+          <SelectTrigger className="bg-[#E7E5D8] border-[#B0AE9F] font-light">
+            <SelectValue placeholder="Select hours" />
+          </SelectTrigger>
+          <SelectContent className="bg-[#F4F2E7]">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((hour) => (
+              <SelectItem key={hour} value={hour.toString()}>
+                {hour} hours
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div>
-        <label
-          htmlFor="testDate"
-          className="block text-sm font-medium text-gray-700"
-        >
+        <label htmlFor="testDate" className="block text-sm font-medium mb-2">
           Select the date of the test
         </label>
-        <input
+        <Input
           type="date"
           id="testDate"
-          required
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           value={formData.testDate}
-          onChange={(e) =>
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setFormData({ ...formData, testDate: e.target.value })
           }
+          className="bg-[#E7E5D8] border-[#B0AE9F] font-light"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium mb-2">
           Select the days you will study
         </label>
         <div className="flex gap-2">
@@ -202,11 +212,12 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
                     : [...formData.selectedDays, day],
                 });
               }}
-              className={`w-10 h-10 rounded-full flex items-center justify-center ${
+              className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center font-light",
                 formData.selectedDays.includes(day)
-                  ? "bg-gray-900 text-white"
-                  : "bg-gray-100 text-gray-900"
-              }`}
+                  ? "bg-[#012622] text-white"
+                  : "bg-[#E7E5D8] text-[#012622] border border-[#B0AE9F]"
+              )}
             >
               {day[0]}
             </button>
@@ -219,27 +230,27 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
   const renderStep2 = () => (
     <div className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium mb-2">
           Upload Study Material
         </label>
-        <input
+        <Input
           type="file"
           onChange={handleFileUpload}
           accept=".pdf,.txt"
-          className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700"
+          className="bg-[#E7E5D8] border-[#B0AE9F] font-light"
         />
         {loading && (
           <div className="mt-2 flex items-center">
-            <div className="animate-spin h-4 w-4 border-2 border-gray-900 rounded-full border-t-transparent"></div>
-            <span className="ml-2 text-sm text-gray-600">
+            <div className="animate-spin h-4 w-4 border-2 border-[#012622] rounded-full border-t-transparent"></div>
+            <span className="ml-2 text-sm text-[#012622] font-light">
               Processing file...
             </span>
           </div>
         )}
         {formData.content && (
           <div className="mt-2">
-            <p className="text-sm text-gray-600">Content preview:</p>
-            <div className="mt-1 p-2 bg-gray-50 rounded text-sm text-gray-700 max-h-32 overflow-y-auto">
+            <p className="text-sm font-medium">Content preview:</p>
+            <div className="mt-1 p-2 bg-[#E7E5D8] rounded text-sm font-light max-h-32 overflow-y-auto">
               {formData.content.slice(0, 200)}...
             </div>
           </div>
@@ -251,35 +262,33 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
   const renderStep3 = () => (
     <div className="space-y-6">
       <div className="text-center">
-        <h3 className="text-lg font-medium text-gray-900">
+        <h3 className="text-lg font-medium text-[#012622]">
           Review Your Study Plan
         </h3>
-        <div className="mt-4 space-y-4">
+        <div className="mt-4 space-y-4 text-left">
           <div>
-            <h4 className="text-sm font-medium text-gray-700">Title:</h4>
-            <p className="text-sm text-gray-600">{formData.title}</p>
+            <h4 className="text-sm font-medium">Title:</h4>
+            <p className="text-sm font-light">{formData.title}</p>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-gray-700">Study Hours:</h4>
-            <p className="text-sm text-gray-600">
+            <h4 className="text-sm font-medium">Study Hours:</h4>
+            <p className="text-sm font-light">
               {formData.hoursPerDay} hours per day
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-gray-700">Study Days:</h4>
-            <p className="text-sm text-gray-600">
+            <h4 className="text-sm font-medium">Study Days:</h4>
+            <p className="text-sm font-light">
               {formData.selectedDays.join(", ")}
             </p>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-gray-700">Test Date:</h4>
-            <p className="text-sm text-gray-600">{formData.testDate}</p>
+            <h4 className="text-sm font-medium">Test Date:</h4>
+            <p className="text-sm font-light">{formData.testDate}</p>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-gray-700">
-              Content Length:
-            </h4>
-            <p className="text-sm text-gray-600">
+            <h4 className="text-sm font-medium">Content Length:</h4>
+            <p className="text-sm font-light">
               {formData.content.length} characters
             </p>
           </div>
@@ -292,8 +301,8 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
     <div className="text-center py-6">
       {loading ? (
         <>
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-600">
+          <div className="animate-spin h-12 w-12 border-b-2 border-[#012622] rounded-full mx-auto"></div>
+          <p className="mt-4 text-sm text-[#012622] font-light">
             Creating your study block...
           </p>
         </>
@@ -302,7 +311,7 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
           <div className="h-12 w-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto">
             ✓
           </div>
-          <p className="mt-4 text-sm text-green-600">
+          <p className="mt-4 text-sm text-green-600 font-light">
             Study block created successfully!
           </p>
         </>
@@ -310,51 +319,41 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
     </div>
   );
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">
-              {step === 1 && "Create Study Block"}
-              {step === 2 && "Upload Study Material"}
-              {step === 3 && "Review Plan"}
-              {step === 4 && "Creating Study Block"}
-            </h2>
-            {step !== 4 && (
-              <button
-                onClick={onClose}
-                className="text-gray-400 hover:text-gray-500"
-              >
-                ✕
-              </button>
-            )}
-          </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="bg-[#F4F2E7] border-[#B0AE9F] max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-medium text-[#012622]">
+            {step === 1 && "Create Study Block"}
+            {step === 2 && "Upload Study Material"}
+            {step === 3 && "Review Plan"}
+            {step === 4 && "Creating Study Block"}
+          </DialogTitle>
+        </DialogHeader>
 
-          {/* Progress Steps */}
+        {step < 4 && (
           <div className="mb-8">
             <div className="flex items-center justify-center space-x-12">
               {[1, 2, 3].map((stepNumber) => (
                 <div
                   key={stepNumber}
                   className={`flex flex-col items-center ${
-                    stepNumber === step ? "text-gray-900" : "text-gray-400"
+                    stepNumber === step ? "text-[#012622]" : "text-[#B0AE9F]"
                   }`}
                 >
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center",
                       stepNumber === step
-                        ? "bg-gray-900 text-white"
+                        ? "bg-[#012622] text-white"
                         : stepNumber < step
-                        ? "bg-green-100 text-green-600"
-                        : "bg-gray-100"
-                    }`}
+                        ? "bg-[#E7E5D8] text-[#012622]"
+                        : "bg-[#E7E5D8]"
+                    )}
                   >
                     {stepNumber < step ? "✓" : stepNumber}
                   </div>
-                  <span className="mt-2 text-xs">
+                  <span className="mt-2 text-xs font-light">
                     {stepNumber === 1 && "Details"}
                     {stepNumber === 2 && "Content"}
                     {stepNumber === 3 && "Review"}
@@ -363,61 +362,60 @@ const CreateStudyBlockModal: React.FC<CreateStudyBlockModalProps> = ({
               ))}
             </div>
           </div>
+        )}
 
-          {error && (
-            <div className="mb-4 p-2 bg-red-50 border border-red-200 text-red-600 rounded">
-              {error}
+        {error && (
+          <div className="mb-4 p-2 bg-red-50 border border-red-200 text-red-600 rounded font-light">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-4 p-2 bg-green-50 border border-green-200 text-green-600 rounded font-light">
+            Study block created successfully!
+          </div>
+        )}
+
+        <form onSubmit={step === 3 ? handleSubmit : (e) => e.preventDefault()}>
+          {step === 1 && renderStep1()}
+          {step === 2 && renderStep2()}
+          {step === 3 && renderStep3()}
+          {step === 4 && renderStep4()}
+
+          {step < 4 && (
+            <div className="mt-6 flex justify-end gap-3">
+              {step > 1 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setStep(step - 1)}
+                  className="bg-[#E7E5D8] border-[#B0AE9F] text-[#012622] hover:bg-[#CFCEC4]"
+                >
+                  Back
+                </Button>
+              )}
+              {step < 3 ? (
+                <Button
+                  type="button"
+                  onClick={handleNext}
+                  className="bg-[#012622] text-white hover:bg-[#012622]/90"
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-[#012622] text-white hover:bg-[#012622]/90 disabled:opacity-50"
+                >
+                  {loading ? "Creating..." : "Create Study Block"}
+                </Button>
+              )}
             </div>
           )}
-
-          {success && (
-            <div className="mb-4 p-2 bg-green-50 border border-green-200 text-green-600 rounded">
-              Study block created successfully!
-            </div>
-          )}
-
-          <form
-            onSubmit={step === 3 ? handleSubmit : (e) => e.preventDefault()}
-          >
-            {step === 1 && renderStep1()}
-            {step === 2 && renderStep2()}
-            {step === 3 && renderStep3()}
-            {step === 4 && renderStep4()}
-
-            {step < 4 && (
-              <div className="mt-6 flex justify-end gap-3">
-                {step > 1 && (
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                    className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-md"
-                  >
-                    Back
-                  </button>
-                )}
-                {step < 3 ? (
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="px-4 py-2 text-sm text-white bg-gray-900 hover:bg-gray-800 rounded-md"
-                  >
-                    Next
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="px-4 py-2 text-sm text-white bg-gray-900 hover:bg-gray-800 rounded-md disabled:bg-gray-400"
-                  >
-                    {loading ? "Creating..." : "Create Study Block"}
-                  </button>
-                )}
-              </div>
-            )}
-          </form>
-        </div>
-      </div>
-    </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

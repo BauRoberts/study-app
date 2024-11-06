@@ -62,19 +62,71 @@ Tech Stack:
 ## Project Structure
 
 ```bash
-/src
-├── app/
-│   ├── api/
-│   │   ├── auth/
-│   │   ├── study-blocks/
-│   │   └── tasks/
-│   ├── dashboard/
-│   └── study-blocks/
-├── components/
-│   ├── study-layouts/
-│   └── modals/
-└── lib/
-```
+src
+│   ├── app
+│   │   ├── api
+│   │   │   ├── auth
+│   │   │   │   ├── [...nextauth]
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── register
+│   │   │   │       └── route.ts
+│   │   │   ├── generate-tasks
+│   │   │   │   └── route.ts
+│   │   │   ├── study-blocks
+│   │   │   │   ├── [id]
+│   │   │   │   │   ├── generate-plan
+│   │   │   │   │   │   └── route.ts
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── route.ts
+│   │   │   └── tasks
+│   │   │       └── [id]
+│   │   │           ├── generate-summary
+│   │   │           │   └── route.ts
+│   │   │           └── route.ts
+│   │   ├── auth
+│   │   │   ├── login
+│   │   │   │   └── page.tsx
+│   │   │   └── register
+│   │   │       └── page.tsx
+│   │   ├── dashboard
+│   │   │   └── page.tsx
+│   │   ├── favicon.ico
+│   │   ├── fonts
+│   │   │   ├── GeistMonoVF.woff
+│   │   │   └── GeistVF.woff
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── providers.tsx
+│   │   └── study-blocks
+│   │       └── [id]
+│   │           ├── StudyBlockClient.tsx
+│   │           └── page.tsx
+│   ├── components
+│   │   ├── GenerateStudyPlanButton.tsx
+│   │   ├── StudySummary.tsx
+│   │   ├── modals
+│   │   │   └── CreateStudyBlockModal.tsx
+│   │   ├── study-layouts
+│   │   │   ├── LearnLayout.tsx
+│   │   │   ├── PracticeLayout.tsx
+│   │   │   ├── ReviewLayout.tsx
+│   │   │   └── StudyLayoutWrapper.tsx
+│   │   └── ui
+│   │       ├── button.tsx
+│   │       ├── input.tsx
+│   │       ├── select
+│   │       │   └── select.tsx
+│   │       └── select.tsx
+│   ├── lib
+│   │   └── utils.ts
+│   ├── types
+│   │   └── next-auth.d.ts
+│   ├── types.tsx
+│   └── utils
+│       └── fileParser.ts
+├── tailwind.config.ts
+└── tsconfig.json
 
 The app's main features:
 Core Features
@@ -99,5 +151,6 @@ Key Files
 /src/components/study-layouts/: Study interface components
 
 What I need help with:
-I would like to setup the style of the login and profile setup! I have some the finalized type of style i want on figma. I also have the logo, colors and font to setup.
+I would like to setup the style of the dashboard! I have the finalized type of style i want on figma. I also have the logo, colors and font to setup.
 Could you help me with this restyling? Let me know if you need to see any specific code or need more context!
+```
