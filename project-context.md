@@ -151,6 +151,5 @@ Key Files
 /src/components/study-layouts/: Study interface components
 
 What I need help with:
-I would like to setup the style of the dashboard! I have the finalized type of style i want on figma. I also have the logo, colors and font to setup.
-Could you help me with this restyling? Let me know if you need to see any specific code or need more context!
+I would like to start restyling the learnLayout page! So here is the file for restyling. Also you may need other files in order to know how was our Style. In the other chat of this project you got that info.
 ```

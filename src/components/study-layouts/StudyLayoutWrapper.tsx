@@ -1,5 +1,5 @@
-// components/study-layouts/StudyLayoutWrapper.tsx
-"use client";
+import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface StudyLayoutWrapperProps {
   children: React.ReactNode;
@@ -33,61 +33,61 @@ export default function StudyLayoutWrapper({
   const prevTask = tasks[currentTaskIndex - 1];
 
   return (
-    <div className="fixed inset-0 bg-white">
+    <div className="fixed inset-0 bg-[#F4F2E7]">
       {/* Header with breadcrumbs and navigation */}
-      <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-20">
-        <div className="px-4 py-4 flex items-center justify-between">
+      <div className="fixed top-0 left-0 right-0 z-20 border-b border-[#B0AE9F]/20 bg-[#CFCEC4]">
+        <div className="flex items-center justify-between px-6 py-4">
           {/* Breadcrumbs */}
-          <div className="flex items-center space-x-2 text-sm">
+          <nav className="flex items-center space-x-2 text-sm">
             <button
               onClick={onBack}
-              className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
+              className="font-medium text-[#012622] transition-colors hover:opacity-80"
             >
               Study Block
             </button>
-            <span className="text-gray-500">/</span>
-            <span className="font-medium text-gray-800">{studyBlockTitle}</span>
-            <span className="text-gray-500">/</span>
-            <span className="font-medium text-gray-800">
+            <span className="text-[#012622]/60">/</span>
+            <span className="font-medium text-[#012622]/90 max-w-[200px] truncate">
+              {studyBlockTitle}
+            </span>
+            <span className="text-[#012622]/60">/</span>
+            <span className="font-medium text-[#012622]/90 max-w-[200px] truncate">
               {currentTask.title}
             </span>
-          </div>
+          </nav>
 
           {/* Task Navigation */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             {prevTask && (
               <button
                 onClick={() => onNavigate(prevTask.id)}
-                className="flex items-center text-sm text-gray-700 hover:text-gray-900 font-medium transition-colors group"
+                className="group flex items-center space-x-2 rounded-md px-3 py-1.5 text-sm font-medium text-[#012622] transition-colors hover:bg-[#012622] hover:text-white"
               >
-                <span className="mr-1 group-hover:transform group-hover:-translate-x-1 transition-transform">
-                  ←
-                </span>
-                Previous Task
+                <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+                <span>Previous</span>
               </button>
             )}
 
-            <span className="text-sm text-gray-700 font-medium">
+            <span className="text-sm font-medium text-[#012622]/70">
               Task {currentTaskIndex + 1} of {tasks.length}
             </span>
 
             {nextTask && (
               <button
                 onClick={() => onNavigate(nextTask.id)}
-                className="flex items-center text-sm text-gray-700 hover:text-gray-900 font-medium transition-colors group"
+                className="group flex items-center space-x-2 rounded-md px-3 py-1.5 text-sm font-medium text-[#012622] transition-colors hover:bg-[#012622] hover:text-white"
               >
-                Next Task
-                <span className="ml-1 group-hover:transform group-hover:translate-x-1 transition-transform">
-                  →
-                </span>
+                <span>Next</span>
+                <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Main content with top padding for header */}
-      <div className="h-full pt-16 bg-gray-50">{children}</div>
+      {/* Main content */}
+      <div className="h-full pt-[4.5rem] bg-[#F4F2E7]">
+        <div className="h-full px-6 py-4">{children}</div>
+      </div>
     </div>
   );
 }

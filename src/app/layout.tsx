@@ -1,12 +1,12 @@
-import { Readex_Pro } from "next/font/google";
+import { IBM_Plex_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Script from "next/script";
 
-const readexPro = Readex_Pro({
+const ibmPlexSans = IBM_Plex_Sans({
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
-  variable: "--font-readex",
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-reddit-sans",
 });
 
 export const metadata = {
@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={readexPro.variable}>
+    <html lang="en" className={ibmPlexSans.variable}>
       <head>
         <Script
           src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"

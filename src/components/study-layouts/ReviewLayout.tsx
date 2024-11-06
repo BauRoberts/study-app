@@ -1,8 +1,15 @@
-// components/study-layouts/ReviewLayout.tsx
-"use client";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Book,
+  Flashlight,
+  GraduationCap,
+} from "lucide-react";
 
 interface ReviewLayoutProps {
   summary: string;
@@ -17,7 +24,6 @@ interface Flashcard {
 type TabType = "summary" | "flashcards" | "quiz";
 
 export default function ReviewLayout({ summary, loading }: ReviewLayoutProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("summary");
   const [currentCardIndex, setCurrentCardIndex] = useState<number>(0);
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
   const [mastered, setMastered] = useState<Record<number, boolean>>({});
@@ -37,30 +43,42 @@ export default function ReviewLayout({ summary, loading }: ReviewLayoutProps) {
       };
     });
 
-  const handleNextCard = (): void => {
+  const handleNextCard = () => {
     setShowAnswer(false);
     setCurrentCardIndex((prev) => (prev + 1) % flashcards.length);
   };
 
-  const handlePrevCard = (): void => {
+  const handlePrevCard = () => {
     setShowAnswer(false);
     setCurrentCardIndex(
       (prev) => (prev - 1 + flashcards.length) % flashcards.length
     );
   };
 
-  const renderMarkdown = (
-    content: string,
-    textColorClass: string = "text-gray-800"
-  ) => (
+  const renderMarkdown = (content: string) => (
     <ReactMarkdown
       components={{
-        p: ({ children }) => (
-          <p className={`${textColorClass} mb-4`}>{children}</p>
+        h1: ({ children }) => (
+          <h1 className="mb-4 text-2xl font-bold text-[#012622]">{children}</h1>
         ),
-        li: ({ children }) => <li className={textColorClass}>{children}</li>,
+        h2: ({ children }) => (
+          <h2 className="mb-3 text-xl font-semibold text-[#012622]/90">
+            {children}
+          </h2>
+        ),
+        h3: ({ children }) => (
+          <h3 className="mb-2 text-lg font-medium text-[#012622]/80">
+            {children}
+          </h3>
+        ),
+        p: ({ children }) => (
+          <p className="mb-4 leading-relaxed text-[#012622]/70">{children}</p>
+        ),
+        li: ({ children }) => (
+          <li className="mb-2 text-[#012622]/70">{children}</li>
+        ),
         strong: ({ children }) => (
-          <strong className="text-gray-900 font-semibold">{children}</strong>
+          <strong className="font-semibold text-[#012622]">{children}</strong>
         ),
       }}
     >
@@ -69,63 +87,91 @@ export default function ReviewLayout({ summary, loading }: ReviewLayoutProps) {
   );
 
   const renderSummaryTab = () => (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div className="lg:col-span-2">
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="prose prose-lg max-w-none">
-            {renderMarkdown(summary)}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <Card className="lg:col-span-2 border-none shadow-lg bg-[#E7E5D8]">
+        <CardHeader className="border-b border-[#B0AE9F]/20 bg-[#CFCEC4]">
+          <div className="flex items-center gap-2">
+            <Book className="h-5 w-5 text-[#012622]" />
+            <CardTitle className="text-xl font-semibold text-[#012622]">
+              Summary
+            </CardTitle>
           </div>
-        </div>
-      </div>
-      <div className="space-y-6">
-        <div className="bg-purple-50 rounded-lg p-6 border border-purple-100">
-          <h3 className="text-lg font-semibold text-purple-900 mb-4">
-            Quick Reference
-          </h3>
-          <ul className="space-y-3">
-            {summary
-              .split("\n")
-              .filter(
-                (line: string) => line.startsWith("• ") || line.startsWith("- ")
-              )
-              .map((point: string, index: number) => (
-                <li key={index} className="flex items-start">
-                  <span className="mr-2 text-purple-700">•</span>
-                  <span className="text-purple-900">
-                    {point.replace(/^[•-]\s+/, "")}
-                  </span>
-                </li>
-              ))}
-          </ul>
-        </div>
-      </div>
+        </CardHeader>
+        <CardContent className="p-6">
+          <ScrollArea className="h-[calc(100vh-16rem)]">
+            <div className="prose prose-lg max-w-none pr-4">
+              {renderMarkdown(summary)}
+            </div>
+          </ScrollArea>
+        </CardContent>
+      </Card>
+
+      <Card className="border-none shadow-lg bg-[#E7E5D8]">
+        <CardHeader className="border-b border-[#B0AE9F]/20 bg-[#CFCEC4]">
+          <div className="flex items-center gap-2">
+            <GraduationCap className="h-5 w-5 text-[#012622]" />
+            <CardTitle className="text-xl font-semibold text-[#012622]">
+              Quick Reference
+            </CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-6">
+          <ScrollArea className="h-[calc(100vh-16rem)]">
+            <ul className="space-y-3 pr-4">
+              {summary
+                .split("\n")
+                .filter(
+                  (line: string) =>
+                    line.startsWith("• ") || line.startsWith("- ")
+                )
+                .map((point: string, index: number) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#012622] text-sm font-medium text-white">
+                      {index + 1}
+                    </span>
+                    <span className="text-[#012622]/70">
+                      {point.replace(/^[•-]\s+/, "")}
+                    </span>
+                  </li>
+                ))}
+            </ul>
+          </ScrollArea>
+        </CardContent>
+      </Card>
     </div>
   );
 
   const renderFlashcardsTab = () => (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="bg-purple-50 px-6 py-3 border-b border-purple-100">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-purple-900">
+    <Card className="max-w-3xl mx-auto border-none shadow-lg bg-[#E7E5D8]">
+      <CardHeader className="border-b border-[#B0AE9F]/20 bg-[#CFCEC4]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Flashlight className="h-5 w-5 text-[#012622]" />
+            <CardTitle className="text-xl font-semibold text-[#012622]">
               Card {currentCardIndex + 1} of {flashcards.length}
-            </span>
-            <span className="text-sm font-medium text-purple-900">
-              {Object.values(mastered).filter(Boolean).length} Mastered
-            </span>
+            </CardTitle>
           </div>
+          <span className="text-sm font-medium text-[#012622]/70">
+            {Object.values(mastered).filter(Boolean).length} Mastered
+          </span>
         </div>
+      </CardHeader>
 
-        <div className="p-6 min-h-[300px] flex flex-col justify-between">
-          <div className="prose prose-lg max-w-none">
-            <div className="mb-4">
-              <strong className="text-gray-900">Question:</strong>
+      <CardContent className="p-6">
+        <div className="min-h-[400px] flex flex-col justify-between">
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-medium text-[#012622] mb-3">
+                Question:
+              </h3>
               {renderMarkdown(flashcards[currentCardIndex].question)}
             </div>
 
             {showAnswer && (
-              <div className="mt-4 pt-4 border-t">
-                <strong className="text-gray-900">Answer:</strong>
+              <div className="pt-6 border-t border-[#B0AE9F]/20">
+                <h3 className="text-lg font-medium text-[#012622] mb-3">
+                  Answer:
+                </h3>
                 {renderMarkdown(flashcards[currentCardIndex].answer)}
               </div>
             )}
@@ -134,15 +180,16 @@ export default function ReviewLayout({ summary, loading }: ReviewLayoutProps) {
           <div className="mt-6 flex items-center justify-between">
             <button
               onClick={handlePrevCard}
-              className="px-4 py-2 text-sm font-medium text-purple-700 hover:text-purple-900 transition-colors"
+              className="group flex items-center space-x-2 rounded-md px-3 py-1.5 text-sm font-medium text-[#012622] transition-colors hover:bg-[#012622] hover:text-white"
             >
-              ← Previous
+              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+              <span>Previous</span>
             </button>
 
             <div className="space-x-2">
               <button
                 onClick={() => setShowAnswer(!showAnswer)}
-                className="px-4 py-2 text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-md transition-colors"
+                className="px-4 py-2 text-sm font-medium text-white bg-[#012622] hover:bg-[#012622]/90 rounded-md transition-colors"
               >
                 {showAnswer ? "Hide Answer" : "Show Answer"}
               </button>
@@ -158,8 +205,8 @@ export default function ReviewLayout({ summary, loading }: ReviewLayoutProps) {
                     px-4 py-2 text-sm font-medium rounded-md transition-colors
                     ${
                       mastered[currentCardIndex]
-                        ? "bg-green-100 text-green-800 hover:bg-green-200"
-                        : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                        ? "bg-[#012622]/10 text-[#012622] hover:bg-[#012622]/20"
+                        : "bg-[#B0AE9F]/10 text-[#012622] hover:bg-[#B0AE9F]/20"
                     }
                   `}
                 >
@@ -170,22 +217,23 @@ export default function ReviewLayout({ summary, loading }: ReviewLayoutProps) {
 
             <button
               onClick={handleNextCard}
-              className="px-4 py-2 text-sm font-medium text-purple-700 hover:text-purple-900 transition-colors"
+              className="group flex items-center space-x-2 rounded-md px-3 py-1.5 text-sm font-medium text-[#012622] transition-colors hover:bg-[#012622] hover:text-white"
             >
-              Next →
+              <span>Next</span>
+              <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </button>
           </div>
         </div>
-      </div>
+      </CardContent>
 
-      <div className="mt-6">
-        <div className="bg-white rounded-lg shadow p-4">
-          <h3 className="text-base font-medium text-gray-900 mb-2">
+      <div className="px-6 pb-6">
+        <div className="bg-[#F4F2E7] rounded-lg p-4 shadow-sm">
+          <h3 className="text-base font-medium text-[#012622] mb-2">
             Mastery Progress
           </h3>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-2 bg-[#B0AE9F]/20 rounded-full overflow-hidden">
             <div
-              className="h-2 bg-green-500 rounded-full transition-all duration-300"
+              className="h-2 bg-[#012622] rounded-full transition-all duration-300"
               style={{
                 width: `${
                   (Object.values(mastered).filter(Boolean).length /
@@ -197,78 +245,82 @@ export default function ReviewLayout({ summary, loading }: ReviewLayoutProps) {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
-  const renderQuizTab = () => (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-purple-50 rounded-lg p-6 mb-4 border border-purple-100">
-        <h3 className="text-lg font-semibold text-purple-900 mb-2">
-          Self-Assessment Quiz
-        </h3>
-        <p className="text-purple-900">
-          Test your knowledge with these review questions.
-        </p>
-      </div>
 
-      <div className="space-y-6">
-        {flashcards.slice(0, 5).map((card: Flashcard, index: number) => (
-          <div key={index} className="bg-white rounded-lg shadow-sm border p-6">
-            <h4 className="text-base font-semibold text-gray-900 mb-4">
-              Question {index + 1}:
-            </h4>
-            {renderMarkdown(card.question)}
-            <button
-              onClick={() => setShowAnswer(true)}
-              className="mt-4 px-4 py-2 text-sm font-medium text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 rounded-md transition-colors"
-            >
-              Check Answer
-            </button>
-          </div>
-        ))}
+  const renderQuizTab = () => (
+    <ScrollArea className="h-[calc(100vh-16rem)]">
+      <div className="max-w-3xl mx-auto space-y-6 pr-4">
+        <Card className="border-none shadow-lg bg-[#E7E5D8]">
+          <CardHeader className="border-b border-[#B0AE9F]/20 bg-[#CFCEC4]">
+            <div className="flex items-center gap-2">
+              <GraduationCap className="h-5 w-5 text-[#012622]" />
+              <CardTitle className="text-xl font-semibold text-[#012622]">
+                Self-Assessment Quiz
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <p className="text-[#012622]/70">
+              Test your knowledge with these review questions.
+            </p>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-6">
+          {flashcards.slice(0, 5).map((card: Flashcard, index: number) => (
+            <Card key={index} className="border-none shadow-lg bg-[#E7E5D8]">
+              <CardContent className="p-6">
+                <h4 className="text-lg font-medium text-[#012622] mb-4">
+                  Question {index + 1}:
+                </h4>
+                {renderMarkdown(card.question)}
+                <button
+                  onClick={() => setShowAnswer(true)}
+                  className="mt-4 px-4 py-2 text-sm font-medium text-[#012622] hover:bg-[#012622] hover:text-white rounded-md transition-colors"
+                >
+                  Check Answer
+                </button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+    </ScrollArea>
   );
 
   if (loading) {
     return (
-      <div className="flex justify-center py-12">
-        <div className="animate-spin h-8 w-8 border-2 border-purple-600 rounded-full border-t-transparent" />
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#012622] border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="h-full overflow-auto px-4 py-6 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
-        {/* Tabs */}
-        <div className="bg-white rounded-lg shadow-sm mb-6">
-          <nav className="flex space-x-8 px-4">
-            {tabs.map((tab: TabType) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`
-                  whitespace-nowrap py-4 px-4 border-b-2 font-medium text-base
-                  transition-all
-                  ${
-                    activeTab === tab
-                      ? "border-purple-500 text-purple-800"
-                      : "border-transparent text-gray-700 hover:text-purple-600 hover:border-purple-300"
-                  }
-                `}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </nav>
-        </div>
+    <div className="min-h-screen bg-[#F4F2E7] p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <Tabs defaultValue="summary">
+          <Card className="border-none shadow-lg bg-[#E7E5D8]">
+            <TabsList className="w-full justify-start rounded-none bg-[#CFCEC4] p-0">
+              {tabs.map((tab: TabType) => (
+                <TabsTrigger
+                  key={tab}
+                  value={tab}
+                  className="flex-1 rounded-none border-b-2 border-transparent px-8 py-4 text-[#012622] data-[state=active]:border-[#012622] data-[state=active]:bg-transparent data-[state=active]:text-[#012622] sm:flex-initial"
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Card>
 
-        {/* Content for each tab */}
-        {activeTab === "summary" && renderSummaryTab()}
-        {activeTab === "flashcards" &&
-          flashcards.length > 0 &&
-          renderFlashcardsTab()}
-        {activeTab === "quiz" && renderQuizTab()}
+          <TabsContent value="summary">{renderSummaryTab()}</TabsContent>
+          <TabsContent value="flashcards">
+            {flashcards.length > 0 && renderFlashcardsTab()}
+          </TabsContent>
+          <TabsContent value="quiz">{renderQuizTab()}</TabsContent>
+        </Tabs>
       </div>
     </div>
   );
